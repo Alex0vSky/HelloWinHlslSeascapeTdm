@@ -78,7 +78,7 @@ jobs:
       - name: Build release and renaming to versioning names
         run: | # build from *.sln
           Function usingReplacer_ ( $value ) {
-            $ffnDxSelection='primitives.cpp'
+            $ffnDxSelection='${{ env.strOutName }}.cpp'
             $strText=[System.IO.File]::ReadAllText( $ffnDxSelection );
             $strText=[Regex]::Replace( $strText, "^(using\s+CurDxVer\s*=\s*DxVer::v)\d+", ( '${1}' + $value ), [System.Text.RegularExpressions.RegexOptions]::Multiline );
             [System.IO.File]::WriteAllText( $ffnDxSelection, $strText )
