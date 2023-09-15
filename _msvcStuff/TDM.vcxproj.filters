@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+    <Filter Include="_pch">
+      <UniqueIdentifier>{d908d6e3-dc21-4768-9872-f958f7f240b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Dx9">
+      <UniqueIdentifier>{c67347b1-f611-4e8d-889f-2887790bbdb3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Dx10">
+      <UniqueIdentifier>{73f00e72-070b-4a58-9359-a5287fe7fb93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Dx11">
+      <UniqueIdentifier>{ce08139a-4b42-4ef7-a138-04cea79a3ecd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Dx12">
+      <UniqueIdentifier>{ad1c53b5-fa67-414a-888a-85a94b0d2a66}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>_pch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\TDM.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>_pch</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\resource\Tdm_ps_Dx10.hlsl">
+      <Filter>Resource Files\Dx10</Filter>
+    </FxCompile>
+    <FxCompile Include="..\resource\Tdm_vs_Dx10.hlsl">
+      <Filter>Resource Files\Dx10</Filter>
+    </FxCompile>
+    <FxCompile Include="..\resource\Tdm_vs_Dx12.hlsl">
+      <Filter>Resource Files\Dx12</Filter>
+    </FxCompile>
+    <FxCompile Include="..\resource\Tdm_ps_Dx12.hlsl">
+      <Filter>Resource Files\Dx12</Filter>
+    </FxCompile>
+    <FxCompile Include="..\resource\Tdm_vs_Dx9.hlsl">
+      <Filter>Resource Files\Dx9</Filter>
+    </FxCompile>
+    <FxCompile Include="..\resource\Tdm_ps_Dx9.hlsl">
+      <Filter>Resource Files\Dx9</Filter>
+    </FxCompile>
+    <FxCompile Include="..\resource\Tdm_ps_Dx11.hlsl">
+      <Filter>Resource Files\Dx11</Filter>
+    </FxCompile>
+    <FxCompile Include="..\resource\Tdm_vs_Dx11.hlsl">
+      <Filter>Resource Files\Dx11</Filter>
+    </FxCompile>
+  </ItemGroup>
+</Project>
