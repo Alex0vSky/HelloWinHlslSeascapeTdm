@@ -1,0 +1,111 @@
+name: Build and creating release
+on: { workflow_dispatch, push: { paths-ignore: [ 
+    '**', '!*.vcxproj', '!*.sln', '!*.cpp', '!_msvcStuff/*', '!resource/*'
+    , '!.github/workflows/build-release.yml' ] } }
+# Configuration
+env:
+  strOutName: TDM
+  strOutExt: exe
+  uriGistId: 10da0f016330624e425e835fcfb75333
+  strPatchVersionBase: 0
+jobs:
+  build-release:
+    runs-on: windows-latest
+    permissions:
+      contents: write # read for "actions/checkout@v3" when GITHUB_TOKEN, write for put in release
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set environment values (windows-latest)
+        run: | 
+          $dirExe="${{ github.workspace }}\bin";
+          echo "dirExe=$dirExe" >> $env:GITHUB_ENV
+          $uriVersion='gist.githubusercontent.com/${{ github.repository_owner }}/${{ env.uriGistId }}/raw'
+          echo "uriVersion=$uriVersion" >> $env:GITHUB_ENV
+
+      - name: Get version values
+        run: | 
+          $strVersionMajor=$(curl.exe https://${{ env.uriVersion }}/VersionMajor.txt);
+          $strVersionMinor=$(curl.exe https://${{ env.uriVersion }}/VersionMinor.txt);
+          $strVersionPatch=$(curl.exe https://${{ env.uriVersion }}/VersionPatch.txt);
+          echo "strVersionMajor=$strVersionMajor" >> $env:GITHUB_ENV
+          echo "strVersionMinor=$strVersionMinor" >> $env:GITHUB_ENV
+          echo "strVersionPatch=$strVersionPatch" >> $env:GITHUB_ENV
+          $strVersionBuild=( [int]${{ env.strPatchVersionBase }} + [int]${{ github.run_number }} )
+          echo "strVersionBuild=$strVersionBuild" >> $env:GITHUB_ENV
+          
+          $strMajorMinor="$strVersionMajor.$strVersionMinor";
+          echo "strTag=$strMajorMinor" >> $env:GITHUB_ENV
+          echo "strVTag=v$strMajorMinor" >> $env:GITHUB_ENV
+          $strSemver="$strMajorMinor.$strVersionPatch.$strVersionBuild";
+          echo "strSemver=$strSemver" >> $env:GITHUB_ENV
+
+      - name: Add MSBuild to PATH
+        uses: microsoft/setup-msbuild@v1.1
+          
+      # Too much space
+      #- name: Cache hwh library
+      #  uses: actions/cache@v3
+      #  with:
+      #    path: ${{ github.workspace }}\HelloWinHlsl
+      #    key: cache-key-hwh_library-${{ env.strVersionMajor }}.${{ env.strVersionMinor }}.${{ env.strVersionPatch }}
+      #  id: cache-hwh_library
+
+      - name: Download library
+        #if: steps.cache-hwh_library.outputs.cache-hit != 'true'
+        run: git clone --depth=1 https://${{ secrets.ACCESS_TO_WHEN_HELLOWINHLSL_IS_PRIVATE }}:@github.com/Alex0vSky/HelloWinHlsl.git
+      - name: Set version to c header
+        run: | 
+          $ffnVersion='HelloWinHlsl\src\Version.h'
+          $env:strText=[System.IO.File]::ReadAllText( $ffnVersion );
+          Function defineReplacer_ ( $name, $value ) {
+              $env:strText=[Regex]::Replace( $env:strText, "(#define\s+$name\s+)\d+", ( '${1}' + $value ) );
+          }
+          defineReplacer_ 'A0S_VERSION_MAJOR' ${{ env.strVersionMajor }}
+          defineReplacer_ 'A0S_VERSION_MINOR' ${{ env.strVersionMinor }}
+          defineReplacer_ 'A0S_VERSION_PATCH' ${{ env.strVersionPatch }}
+          defineReplacer_ 'A0S_VERSION_BUILD' ${{ env.strVersionBuild }}
+          [System.IO.File]::WriteAllText( $ffnVersion, $env:strText )
+                    
+      - name: Build library
+        #if: steps.cache-hwh_library.outputs.cache-hit != 'true'
+        run: | # build from *.sln
+          MSBuild HelloWinHlsl\HelloWinHlsl.sln -noLogo -verbosity:minimal -m -p:Platform=x86 -p:Configuration=Debug
+          MSBuild HelloWinHlsl\HelloWinHlsl.sln -noLogo -verbosity:minimal -m -p:Platform=x86 -p:Configuration=Release
+          MSBuild HelloWinHlsl\HelloWinHlsl.sln -noLogo -verbosity:minimal -m -p:Platform=x64 -p:Configuration=Debug
+          MSBuild HelloWinHlsl\HelloWinHlsl.sln -noLogo -verbosity:minimal -m -p:Platform=x64 -p:Configuration=Release
+        
+      - name: Build release and renaming to versioning names
+        run: | # build from *.sln
+          Function usingReplacer_ ( $value ) {
+            $ffnDxSelection='primitives.cpp'
+            $strText=[System.IO.File]::ReadAllText( $ffnDxSelection );
+            $strText=[Regex]::Replace( $strText, "^(using\s+CurDxVer\s*=\s*DxVer::v)\d+", ( '${1}' + $value ), [System.Text.RegularExpressions.RegexOptions]::Multiline );
+            [System.IO.File]::WriteAllText( $ffnDxSelection, $strText )
+          }
+          
+          @( 'x86', 'x64' ) | % { $strPlatform=$_; 
+              @( 'Debug', 'Release' ) | % { $strConfiguration=$_; 
+                  9..12 | % { $strDxVer=$_; 
+                        usingReplacer_ $strDxVer
+                        MSBuild . -noLogo -verbosity:minimal -m -p:Platform=$strPlatform -p:Configuration=$strConfiguration
+                        $dst="${{ runner.temp }}\${{ env.strOutName }}-${{ env.strTag }}-Dx$strDxVer-$strPlatform-$strConfiguration.${{ env.strOutExt }}";
+                        mv -v ${{ github.workspace }}\bin\$strPlatform\$strConfiguration\${{ env.strOutName }}.${{ env.strOutExt }} $dst
+                        Compress-Archive -Path "$dst" -DestinationPath "${dst}.zip"
+                  }
+              }
+          }
+      - name: Replace '\\' for softprops/action-gh-release
+        run: | 
+          $strGlob="${{ runner.temp }}/${{ env.strOutName }}-${{ env.strTag }}-*.${{ env.strOutExt }}.zip";
+          $strGlob = $strGlob -replace '\\','/';
+          echo "strGlob=$strGlob" >> $env:GITHUB_ENV
+
+      # Warning: only this '/' slashes!
+      - name: Creating GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ env.strVTag }}
+          fail_on_unmatched_files: true
+          body: Version ${{ env.strSemver }}
+          files: ${{ env.strGlob }}
