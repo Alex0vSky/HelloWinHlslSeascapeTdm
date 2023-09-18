@@ -11,8 +11,7 @@ https://en.wikipedia.org/wiki/DirectX
 
 Using [HelloWinHlsl](https://github.com/Alex0vSky/HelloWinHlsl) to render seascape Tdm (shadertoy) in available version of DirectX
 
-![Untitled](https://github.com/Alex0vSky/HelloWinHlslSeascapeTdm/assets/52796897/2ed3971a-ce2c-42cc-8d58-6b28329bb5a8)
-![](https://alex0vsky.github.io/assets/images/HelloWinHlslSeascapeTdm.gif)
+![](https://github.com/Alex0vSky/alex0vsky.github.io/blob/main/assets/images/HelloWinHlslSeascapeTdm.gif)
 
 ## Features
 
