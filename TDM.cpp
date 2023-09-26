@@ -17,27 +17,19 @@ template<> class seascape<DxVer::v9> : public CurClientApp<DxVer::v9> { using T 
 	CPtr< IDirect3DVertexBuffer9 > m_pcVertexBuf;
 	D3DPRIMITIVETYPE m_enuPrimitiveType;
 	UINT m_uStartVertex, m_uPrimitiveCount;
-	LikeDxut::Timer m_oTimer;
-
-	struct PS_CONST_BUFF { 
-		D3DXVECTOR4 ve2Resolution;
-		float fTime;
-	};
-	PS_CONST_BUFF PsConstData = { };
 	Dx::Tool::Shader::ConstantSetterDx9::Setter::uptrc_t m_puPsConstSetter;
+	LikeDxut::Timer m_oTimer;
 
 	bool init(DxCtx<T>::cref_ptr_t crpustDxCtx, ToolCtx<T>::cref_ptr_t puoTools, Adjust<T>* poAdjustDxAux) {
 		Sys::Hr hr;
 
 		// Load shaders
-		std::vector<BYTE> veShaderByte;
 		m_pcVs = puoTools ->shader( ) ->loader( ) ->arrayC( ) ->fromHeader( ) ->Vs( 
 				[]() ->const auto & {
 					static 
 #include "resource\Tdm_vs_Dx9.hlsl.h"
 					return g_main;
 				}
-				, &veShaderByte
 			);
 		m_pcPs = puoTools ->shader( ) ->loader( ) ->arrayC( ) ->fromHeader( ) ->Ps( 
 				[]() ->const auto & {
@@ -323,7 +315,7 @@ template<> class seascape <DxVer::v12> : public CurClientApp<DxVer::v12> { using
         crpsoDynamic ->m_pcCommandList ->IASetPrimitiveTopology( m_enuPrimTopology );
 
 		m_puoConstBufAccessor ->passToShader( 
-				crpsoDynamic ->m_pcCommandList
+				crpsoDynamic ->m_uFrameIndex
 				, [this](PS_CONST_BUFF *p) { 
 					p ->iTime = m_oTimer.get( );
 				}

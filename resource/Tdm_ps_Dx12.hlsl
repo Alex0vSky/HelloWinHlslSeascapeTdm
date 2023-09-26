@@ -1,6 +1,8 @@
 // pixel shader
-cbuffer PerFrameConstants : register (b0) { float2 iResolution; }
-cbuffer PerFrameConstants : register (b1) { float iTime; }
+cbuffer ConstantBuffer : register(b0) {
+	float2 iResolution;
+	float iTime;
+};
 
 static const int NUM_STEPS = 8;
 static const float PI	 	= 3.1415;
