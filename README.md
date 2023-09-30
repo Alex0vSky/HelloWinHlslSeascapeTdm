@@ -31,7 +31,8 @@ Building the project and tests from the source code requires the presence of the
 Can ask questions. PRs are accepted. No requirements for contributing.
 
 ## Thanks
-[shadertoy](https://www.shadertoy.com/view/llsXD2) "Seascape" by Alexander Alekseev aka TDM - 2014
+[shadertoy](https://www.shadertoy.com/view/Ms2SD1) "Seascape" by Alexander Alekseev aka TDM - 2014
+[shadertoy](https://www.shadertoy.com/view/llsXD2) documented version from bteitler - 2015
 
 ## License
 See the [LICENSE](https://github.com/Alex0vSky/HelloWinHlslSeascapeTdm/blob/main/LICENSE) file for license rights and limitations (MIT).
