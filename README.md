@@ -11,7 +11,7 @@ https://en.wikipedia.org/wiki/DirectX
 
 Using [HelloWinHlsl](https://github.com/Alex0vSky/HelloWinHlsl) to render seascape Tdm (shadertoy) in available version of DirectX
 ![](https://github.com/Alex0vSky/alex0vsky.github.io/blob/main/assets/images/HelloWinHlslSeascapeTdm.gif)
-[Link](https://github.com/Alex0vSky/HelloWinHlslSeascapeTdm/blob/main/resource/Tdm_ps_Dx12.hlsl) to ps shader code for Dx12
+[Link](https://github.com/Alex0vSky/HelloWinHlslSeascapeTdm/blob/main/resource/Tdm_ps_Dx12.hlsl) to pixel shader code HLSL for Dx12
 
 ## Features
 
