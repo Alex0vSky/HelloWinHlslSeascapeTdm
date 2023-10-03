@@ -14,6 +14,7 @@ Using [HelloWinHlsl](https://github.com/Alex0vSky/HelloWinHlsl) to render seasca
 [Link](https://github.com/Alex0vSky/HelloWinHlslSeascapeTdm/blob/main/resource/Tdm_ps_Dx12.hlsl) to pixel shader code HLSL for Dx12
 
 ## Features
+Here is a [collection](https://alex0vsky.github.io/tags/seascape/) of HLSL seascape shaders.
 
 ## Requirements
 WindowsSdk, DirectX
